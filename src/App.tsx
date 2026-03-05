@@ -65,45 +65,70 @@ function ScrollToTop() {
 }
 
 function MainLayout({ children, isScrolled, isMobileMenuOpen, setIsMobileMenuOpen, cartCount, isCartOpen, setIsCartOpen, cartItems, cartTotal, updateQuantity, removeFromCart }: any) {
+  const { pathname } = useLocation();
+  // Apply glass pills only on pages with a hero image background
+  const isHeroPage = pathname === '/' || pathname.startsWith('/category/');
+  const useGlass = !isScrolled && isHeroPage;
+
   return (
     <div className="min-h-screen bg-[var(--color-lighter)] text-gray-900 overflow-x-hidden flex flex-col">
       <ScrollToTop />
       {/* Navbar */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md border-b border-gray-200 py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-500 ${isScrolled
+        ? 'bg-white/95 backdrop-blur-md border-b border-gray-200 py-4 shadow-sm'
+        : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
+
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 cursor-pointer">
-              <Zap className="text-[var(--color-brand)] w-8 h-8" />
-              <span className="text-2xl font-bold tracking-wider uppercase text-gray-900">Oukitel <span className="text-[var(--color-brand)]">Egypt</span></span>
+            <Link to="/" className={`flex items-center gap-2 cursor-pointer transition-all ${useGlass ? 'bg-white/15 backdrop-blur-md border border-white/30 px-4 py-2 rounded-full shadow-md' : ''
+              }`}>
+              <Zap className={`w-7 h-7 transition-colors ${isScrolled || !isHeroPage ? 'text-[var(--color-brand)]' : 'text-white'}`} />
+              <span className={`text-xl font-bold tracking-wider uppercase transition-colors ${isScrolled || !isHeroPage ? 'text-gray-900' : 'text-white'}`}>
+                Oukitel <span className={isScrolled || !isHeroPage ? 'text-[var(--color-brand)]' : 'text-white/80'}>Egypt</span>
+              </span>
             </Link>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-8">
-              <Link to="/" className="text-gray-800 text-sm font-medium hover:text-[var(--color-brand)] transition-colors">الرئيسية</Link>
-              <Link to="/#products" className="text-gray-800 text-sm font-medium hover:text-[var(--color-brand)] transition-colors">المنتجات</Link>
-              <Link to="/#features" className="text-gray-800 text-sm font-medium hover:text-[var(--color-brand)] transition-colors">المميزات</Link>
-              <Link to="/#contact" className="text-gray-800 text-sm font-medium hover:text-[var(--color-brand)] transition-colors">تواصل معنا</Link>
+            {/* Desktop Nav - each link its own glass pill */}
+            <div className="hidden md:flex items-center gap-3">
+              {[{ to: '/', label: 'الرئيسية' }, { to: '/#products', label: 'المنتجات' }, { to: '/#features', label: 'المميزات' }, { to: '/#contact', label: 'تواصل معنا' }].map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`text-sm font-semibold transition-all px-4 py-2 rounded-full ${isScrolled || !isHeroPage
+                      ? 'text-gray-800 hover:text-[var(--color-brand)] hover:bg-gray-100'
+                      : 'text-white bg-white/15 backdrop-blur-md border border-white/30 shadow-md hover:bg-white/25'
+                    }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-4 text-gray-800">
+            {/* Actions - each its own glass pill */}
+            <div className="flex items-center gap-3">
               <button
-                className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className={`relative p-2.5 rounded-full transition-all ${isScrolled || !isHeroPage
+                    ? 'text-gray-800 hover:bg-gray-100'
+                    : 'text-white bg-white/15 backdrop-blur-md border border-white/30 shadow-md hover:bg-white/25'
+                  }`}
                 onClick={() => setIsCartOpen(true)}
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-[var(--color-brand)] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-0.5 -right-0.5 bg-[var(--color-brand)] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
                     {cartCount}
                   </span>
                 )}
               </button>
               <button
-                className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className={`md:hidden p-2.5 rounded-full transition-all ${isScrolled || !isHeroPage
+                    ? 'text-gray-800 hover:bg-gray-100'
+                    : 'text-white bg-white/15 backdrop-blur-md border border-white/30 shadow-md hover:bg-white/25'
+                  }`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
